@@ -55,6 +55,9 @@ class PostsController extends Controller
     public function edit(Posts $post)
     {
         $user = Auth::user();
+        if($user->id != $post->user_id){
+            return Redirect::route('index');
+        }
         $data['posts'] = Posts::where('user_id', $user->id)->get();
         $data['name'] = $user->name;
         $data['post'] = $post;
@@ -70,6 +73,9 @@ class PostsController extends Controller
      */
     public function update(PostRequest $request, Posts $post)
     {
+        if(Auth::user()->id != $post->user_id){
+            return Redirect::route('index');
+        }
         $post->name = $request['name'];
         $post->description = $request['description'];
         $post->save();
@@ -84,6 +90,9 @@ class PostsController extends Controller
      */
     public function destroy(Posts $post)
     {
+        if(Auth::user()->id != $post->user_id){
+            return Redirect::route('index');
+        }
         $post->delete();
         return Redirect::route('index');
     }
