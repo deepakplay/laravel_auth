@@ -5,17 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\DB;
 use App\Posts;
 use App\User;
 use App\Http\Requests\PostRequest;
 
 class PostsController extends Controller
 {
-
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
     /**
      * Display a listing of the resource.
      *
@@ -23,10 +19,16 @@ class PostsController extends Controller
      */
     public function index()
     {
+        //$data['posts'] = Posts::all();
+        $data['posts'] = DB::table("posts")->select('posts.*', DB::raw('(SELECT name from users where users.id = posts.user_id) as name'))->get();
+        return view('home', $data);
+    }
+
+    public function posts(){
         $user = Auth::user();
         $data['posts'] = Posts::where('user_id', $user->id)->get();
         $data['name'] = $user->name;
-        return view('welcome', $data);
+        return view('posts.index', $data);        
     }
 
     /**
@@ -38,11 +40,11 @@ class PostsController extends Controller
     public function store(PostRequest $request)
     {
         $post = new Posts();
-        $post->name = $request['name'];
+        $post->postname = $request['name'];
         $post->description = $request['description'];
         $post->user_id = Auth::user()->id;
         $post->save();
-        return Redirect::route('index');
+        return Redirect::route('posts');
     }
 
 
@@ -56,12 +58,12 @@ class PostsController extends Controller
     {
         $user = Auth::user();
         if($user->id != $post->user_id){
-            return Redirect::route('index');
+            return Redirect::route('posts.index');
         }
         $data['posts'] = Posts::where('user_id', $user->id)->get();
         $data['name'] = $user->name;
         $data['post'] = $post;
-        return view('welcome', $data);
+        return view('posts.index', $data);
     }
 
     /**
@@ -76,10 +78,10 @@ class PostsController extends Controller
         if(Auth::user()->id != $post->user_id){
             return Redirect::route('index');
         }
-        $post->name = $request['name'];
+        $post->postname = $request['name'];
         $post->description = $request['description'];
         $post->save();
-        return Redirect::route('index');
+        return Redirect::route('posts');
     }
 
     /**
@@ -94,6 +96,6 @@ class PostsController extends Controller
             return Redirect::route('index');
         }
         $post->delete();
-        return Redirect::route('index');
+        return Redirect::route('posts');
     }
 }

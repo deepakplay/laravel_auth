@@ -15,7 +15,7 @@
 	                    	@endif
 	                    	@csrf
 	                    	<div class="form-group">
-	                    		<input type="text" name="name" class="form-control @error('name') is-invalid @enderror" placeholder="Enter the title of the post" value="@if(isset($post)){{$post->name}}@endif">
+	                    		<input type="text" name="name" class="form-control @error('name') is-invalid @enderror" placeholder="Enter the title of the post" value="@if(isset($post)){{$post->postname}}@endif">
 	                    		@if($errors->has('name'))
 		                    		<div class="invalid-feedback">
 		                    			{{ $errors->first('name') }}
@@ -45,18 +45,23 @@
 		        <div class="col-md-5">
 		        	@foreach($posts as $post)
 		            <div class="card mt-1" rounded>
-		                <div class="card-header d-flex justify-content-between">
-		                	<h4 class="h4">{{$post->name}}</h4>
-		                	<span>
-		                		<a href="{{route('post.edit', $post->id)}}" class="fas fa-edit"></a>
+		                <div class="card-header ">
+		                	<div class="row d-flex justify-content-between px-3 ">
+			                	<h4 class="h4">{{$post->postname}}</h4>
+			                	<span>
+			                		<a href="{{route('post.edit', $post->id)}}" class="fas fa-edit"></a>
 
-		                		<a href="#" class="fas fa-trash-alt" onclick="document.getElementById('delete_form_{{$post->id}}').submit()"></a>
+			                		<a href="#" class="fas fa-trash-alt" onclick="document.getElementById('delete_form_{{$post->id}}').submit()"></a>
 
-		                		<form  method="POST"  id="delete_form_{{$post->id}}" action="{{route('post.destroy', $post->id)}}">
-		                			@csrf
-		                			@method('DELETE')
-		                		</form>
-		                	</span>
+			                		<form  method="POST"  id="delete_form_{{$post->id}}" action="{{route('post.destroy', $post->id)}}">
+			                			@csrf
+			                			@method('DELETE')
+			                		</form>
+			                	</span>
+		                	</div>
+		                	<div class="row px-3">
+		                		<span class="small"><em>{{Auth::User()->name}}</em>, at {{date('D M y, h:i a', strtotime($post->post_at))}}</span>
+		                	</div>
 		                </div>
 
 		                <div class="card-body">
