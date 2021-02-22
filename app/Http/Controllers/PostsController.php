@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+
 use App\Posts;
 use App\User;
 use App\Http\Requests\PostRequest;
@@ -20,13 +22,13 @@ class PostsController extends Controller
     public function index()
     {
         //$data['posts'] = Posts::all();
-        $data['posts'] = DB::table("posts")->select('posts.*', DB::raw('(SELECT name from users where users.id = posts.user_id) as name'))->paginate(6);
+        $data['posts'] = DB::table("posts")->select('posts.*', DB::raw('(SELECT name from users where users.id = posts.user_id) as name'))->orderBy('id', 'DESC')->paginate(6);
         return view('home', $data);
     }
 
     public function posts(){
         $user = Auth::user();
-        $data['posts'] = Posts::where('user_id', $user->id)->paginate(4);
+        $data['posts'] = Posts::where('user_id', $user->id)->orderBy('id', 'DESC')->paginate(4);
         $data['name'] = $user->name;
         return view('posts.index', $data);        
     }
@@ -38,10 +40,17 @@ class PostsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(PostRequest $request)
-    {
+    {   
+        if(isset($request->imgfile) && $request->file('imgfile')->getClientOriginalName()){
+            $file= date('YmdHis').rand(1, 999999).'.'.$request->file('imgfile')->getClientOriginalExtension();
+            $request->file('imgfile')->storeAs('public/images', $file);
+        }else{
+            $file='';
+        }
         $post = new Posts();
         $post->postname = $request['name'];
         $post->description = $request['description'];
+        $post->img = $file;
         $post->user_id = Auth::user()->id;
         $post->save();
         return Redirect::route('posts');
@@ -60,7 +69,8 @@ class PostsController extends Controller
         if($user->id != $post->user_id){
             return Redirect::route('posts.index');
         }
-        $data['posts'] = Posts::where('user_id', $user->id)->get();
+
+        $data['posts'] = Posts::where('user_id', $user->id)->orderBy('id', 'DESC')->paginate(4);
         $data['name'] = $user->name;
         $data['post'] = $post;
         return view('posts.index', $data);
@@ -78,6 +88,14 @@ class PostsController extends Controller
         if(Auth::user()->id != $post->user_id){
             return Redirect::route('index');
         }
+
+        if(isset($request->imgfile) && $request->file('imgfile')->getClientOriginalName()){
+            Storage::delete('public/images/'.$post->img);
+            $file= date('YmdHis').rand(1, 999999).'.'.$request->file('imgfile')->getClientOriginalExtension();
+            $request->file('imgfile')->storeAs('public/images', $file);
+            $post->img = $file;
+        }
+
         $post->postname = $request['name'];
         $post->description = $request['description'];
         $post->save();
@@ -95,6 +113,8 @@ class PostsController extends Controller
         if(Auth::user()->id != $post->user_id){
             return Redirect::route('index');
         }
+
+        Storage::delete('public/images/'.$post->img);
         $post->delete();
         return Redirect::route('posts');
     }

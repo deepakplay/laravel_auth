@@ -17,8 +17,9 @@ class CreatePostsTable extends Migration
             $table->id();
             $table->string('postname');
             $table->string('description');
+            $table->string('img');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->timestamp('post_at');
+            $table->timestamp('post_at')->useCurrent();
             $table->timestamps();
         });
     }

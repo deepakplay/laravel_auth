@@ -11,8 +11,11 @@
 		                	<h5 class="h5">{{$post->postname}}</h5>
 		                	<span class="small"><em>{{$post->name}}</em>, at {{date('D M y, h:i a', strtotime($post->post_at))}}</span>
 		                </div>
-		                <div class="card-body">
+		                <div class="card-body image_post">
 		                	<p>{{$post->description}}</p>
+		                	@if($post->img != '')
+		                		<img class="img-fluid" width="100%" src="{{asset("storage/images/$post->img")}}">
+		                	@endif		                	
 		                </div>
 
 		            </div>
