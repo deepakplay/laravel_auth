@@ -20,13 +20,13 @@ class PostsController extends Controller
     public function index()
     {
         //$data['posts'] = Posts::all();
-        $data['posts'] = DB::table("posts")->select('posts.*', DB::raw('(SELECT name from users where users.id = posts.user_id) as name'))->get();
+        $data['posts'] = DB::table("posts")->select('posts.*', DB::raw('(SELECT name from users where users.id = posts.user_id) as name'))->paginate(6);
         return view('home', $data);
     }
 
     public function posts(){
         $user = Auth::user();
-        $data['posts'] = Posts::where('user_id', $user->id)->get();
+        $data['posts'] = Posts::where('user_id', $user->id)->paginate(4);
         $data['name'] = $user->name;
         return view('posts.index', $data);        
     }

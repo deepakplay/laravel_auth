@@ -69,6 +69,10 @@
 		                </div>
 		            </div>
 		            @endforeach
+		            <div class="row justify-content-center mt-3">
+		            	{{$posts->links()}}	
+		            </div>
+		        	
 		        </div>
 		    </div>
 		@endif

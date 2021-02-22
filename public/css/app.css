@@ -121,6 +121,16 @@ address {
   line-height: inherit;
 }
 
+.page-item{
+  margin:0 3px;
+}
+
+.page-link{
+  border-radius: 50% !important;
+  padding: .3rem .6rem !important;
+}
+
+
 ol,
 ul,
 dl {
