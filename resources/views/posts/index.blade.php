@@ -17,7 +17,7 @@
 	                    	<div class="form-group">
 	                    		<input type="text" name="name" class="form-control @error('name') is-invalid @enderror" placeholder="Enter the title of the post" value="@if(isset($post)){{$post->postname}}@endif" >
 	                    		@if($errors->has('name'))
-		                    		<div class="invalid-feedback">
+		                    		<div class="text-danger small">
 		                    			{{ $errors->first('name') }}
 		                    		</div>
 								@endif
@@ -26,7 +26,7 @@
 	                    	<div class="form-group">
 	                    		<textarea class="form-control @error('description') is-invalid @enderror" name="description" placeholder="Enter the description">@if(isset($post)){{$post->description}}@endif</textarea>
 	                    		@if($errors->has('description'))
-		                    		<div class="invalid-feedback">
+		                    		<div class="text-danger small">
 		                    			{{ $errors->first('description') }}
 		                    		</div>
 								@endif
@@ -34,7 +34,13 @@
 
 
 	                    	<div class="form-group">
-	                    		<input type="file" class="form-control-file" name="imgfile" accept="image/*">
+	                    		<input type="file"  class="form-control-file" name="imgfile" accept="image/*">
+
+	                    		@if($errors->has('imgfile'))
+	                    			<div class="text-danger small">
+	                    				{{ $errors->first('imgfile') }}
+		                    		</div>
+								@endif
 	                    	</div>
 
 	                    	<input class="btn btn-success float-right" type="submit" value="@if(isset($post)) Update @else Post @endif"></input>
