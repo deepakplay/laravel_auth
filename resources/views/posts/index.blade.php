@@ -55,12 +55,12 @@
 			<div class="row justify-content-center mt-3">
 		        <div class="col-lg-5 col-md-6 col-sm-10">
 		        	@foreach($posts as $post)
-			            <div class="card mt-2" rounded>
+			            <div class="card mt-3" rounded>
 			                <div class="card-header ">
 			                	<div class="row d-flex justify-content-between px-3 ">
 				                	<h4 class="h4">{{$post->postname}}</h4>
 				                	<span>
-				                		<a href="{{route('post.edit', $post->id)}}" class="fas fa-edit"></a>
+				                		<a href="{{route('post.edit', $post->id)}}" class="fas fa-edit mr-1"></a>
 
 				                		<a href="#" class="fas fa-trash-alt" onclick="document.getElementById('delete_form_{{$post->id}}').submit()"></a>
 
