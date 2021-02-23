@@ -2,6 +2,7 @@
 
 @section('content')
     <div class="container"> 
+    	<h3 class="h3">Homepage</h3>
 	    @if(count($posts)>0)
 			<div class="row justify-content-center mt-3">
 		        <div class="col-md-5">
