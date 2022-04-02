@@ -21,8 +21,8 @@ class PostsController extends Controller
      */
     public function index()
     {
-        //$data['posts'] = Posts::all();
-        $data['posts'] = DB::table("posts")->select('posts.*', DB::raw('(SELECT name from users where users.id = posts.user_id) as name'))->orderBy('id', 'DESC')->paginate(6);
+        $data['posts'] = Posts::paginate(6);
+        //$data['posts'] = DB::table("posts")->select('posts.*', DB::raw('(SELECT name from users where users.id = posts.user_id) as name'))->orderBy('id', 'DESC')->paginate(6);
         return view('home', $data);
     }
 
@@ -30,7 +30,7 @@ class PostsController extends Controller
         $user = Auth::user();
         $data['posts'] = Posts::where('user_id', $user->id)->orderBy('id', 'DESC')->paginate(4);
         $data['name'] = $user->name;
-        return view('posts.index', $data);        
+        return view('posts.index', $data);
     }
 
     /**
@@ -40,7 +40,7 @@ class PostsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(PostRequest $request)
-    {   
+    {
         if(isset($request->imgfile) && $request->file('imgfile')->getClientOriginalName()){
             $file= date('YmdHis').rand(1, 999999).'.'.$request->file('imgfile')->getClientOriginalExtension();
             $request->file('imgfile')->storeAs('public/images', $file);
